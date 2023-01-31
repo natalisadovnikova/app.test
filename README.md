@@ -34,18 +34,25 @@ docker exec -it php /bin/bash
 # Документация phpdocumentor: 
 https://hub.docker.com/r/phpdoc/phpdoc
 Сгененрировать на основании исходников проекта:
+
 docker run --rm -v $(pwd)/www/app.test:/data phpdoc/phpdoc -d "src"
+
 Посмотреть сгенерированную документацию можно по тут:
+
 http://app.test/.phpdoc/build/index.html
 
 
 # Запуск тестов 
 (https://thephp.website/en/issue/php-docker-quick-setup/)
+
 docker-compose run phpunit unitTest
 
 #  Обновление базы таймзон и DST
 Запуск консольной команды для обновления базы таймзон и DST
 Необходимо подключиться к контейнеру
-//docker exec -it php /bin/bash
-//запустить команду
-//php console.php
+
+docker exec -it php /bin/bash
+
+и запустить команду
+
+php console.php

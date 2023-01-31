@@ -15,6 +15,13 @@ Thumbs.db
 # composer vendor dir
 /vendor
 
+/logs/mysql/*
+/mysql
+/mysql-files
+/help.txt
+/www/app.test/vendor
+/www/app.test/vendor
+
 # composer itself is not needed
 composer.phar
 
