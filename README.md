@@ -6,6 +6,9 @@ work with timezone
 # Клонируем проект себе в рабочую директорию
 git clone git@github.com:natalisadovnikova/app.test.git
 
+# Переходим в директорию с проектом
+cd app.test
+
 # Билдим проект
    docker-compose build
 
@@ -14,8 +17,11 @@ git clone git@github.com:natalisadovnikova/app.test.git
 
 # Устанавливаем зависимости приложения через composer
 docker-compose exec php composer install
+
+Оптимизация
 docker-compose exec php composer dump-autoload -o
-Доставить новые зависимости можно так
+
+Доставить новые зависимости можно так (не нужно выполнять)
 docker-compose exec php composer require phpunit/phpunit --dev
 
 # Прописываем /etc/hosts
@@ -23,8 +29,8 @@ docker-compose exec php composer require phpunit/phpunit --dev
 
 
 # Доступ в phpmyadmin
-http://app.test:8080/
-server mysql , user root, password 12345
+http://app.test:8080/ 
+настройки:  server mysql , user root, password 12345
 
 # Доступ в вебе
 

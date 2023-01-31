@@ -9,12 +9,14 @@ $pdo = new PDO('mysql:host=mysql;dbname='.$config['database'], $config['user'], 
 
 $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) use ($pdo){
     $r->addRoute('GET', '/localtime/{id}/{timestamp:\d+}', function ($vars) use ($pdo){
+        header('Content-Type: application/json; charset=utf-8');
         $getDataService = new GetDataService($pdo);
-        var_dump($getDataService->getLocalTime($vars['id'], $vars['timestamp']));
+        echo $getDataService->getLocalTime($vars['id'], $vars['timestamp']);
     });
     $r->addRoute('GET', '/utctime/{id}/{timestamp:\d+}', function ($vars) use ($pdo){
+        header('Content-Type: application/json; charset=utf-8');
         $getDataService = new GetDataService($pdo);
-        var_dump($getDataService->getUtcTime($vars['id'], $vars['timestamp']));
+        echo $getDataService->getUtcTime($vars['id'], $vars['timestamp']);
     });
 });
 
