@@ -20,7 +20,7 @@ Thumbs.db
 /mysql-files
 /help.txt
 /www/app.test/vendor
-/www/app.test/vendor
+/www/app.test/.phpdoc
 
 # composer itself is not needed
 composer.phar
