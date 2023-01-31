@@ -1,21 +1,25 @@
 # app.test
 work with timezone
 
+# Устанавливаем docker
 
-# Прописываем /etc/hosts
-   127.0.0.1 app.test
+# Клонируем проект себе в рабочую директорию
+git clone git@github.com:natalisadovnikova/app.test.git
 
-# Собираем образ
+# Билдим проект
    docker-compose build
 
 # Запускаем среду в автономном режиме
    docker-compose up -d
 
-# Установим зависимости приложения через composer
+# Устанавливаем зависимости приложения через composer
 docker-compose exec php composer install
 docker-compose exec php composer dump-autoload -o
 Доставить новые зависимости можно так
 docker-compose exec php composer require phpunit/phpunit --dev
+
+# Прописываем /etc/hosts
+127.0.0.1 app.test
 
 
 # Доступ в phpmyadmin
