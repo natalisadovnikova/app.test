@@ -42,6 +42,20 @@ class GmtOffset
     }
 
     /**
+     * Применить смещение на 1 час в случае введения летнего времени
+     * @return void
+     */
+    public function applyDst(bool $isDst = false)
+    {
+        if($isDst) {
+            //при вводе летнего времени часы переводят на час вперед, gmt_offset = gmt_offset + 1*60*60
+            $this->offset += 3600;
+        } else {
+            //при возвращении на зимнее время - на час назад
+            $this->offset -= 3600;
+        }
+    }
+    /**
      * @param $offset
      * @return void
      * @throws ValueException
@@ -57,6 +71,7 @@ class GmtOffset
         }
         
     }
+
 
     /**
      * @return int

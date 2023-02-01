@@ -27,7 +27,7 @@ class SqlTimeZoneRepository implements TimeZoneRepositoryInterface
 
     private function loadItems()
     {
-        $stmt = $this->pdo->prepare("SELECT  * FROM timezone_items WHERE `city_id` = :id ORDER BY zone_start ASC");
+        $stmt = $this->pdo->prepare("SELECT  * FROM timezone_items WHERE `city_id` = :id ORDER BY zone_start DESC");
         $stmt->execute(['id' => $this->cityUuid->toString()]);
         $this->items = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
