@@ -4,15 +4,10 @@ namespace app\service;
 
 use app\domain\aggregate\City;
 use app\domain\exception\DataNotFoundException;
-use app\domain\exception\ExternalDataProblemException;
 use app\domain\value\GmtOffset;
-use app\repository\interfaces\CityRepositoryInterface;
-use app\repository\interfaces\TimeZoneRepositoryInterface;
+use app\domain\value\TimeZonePeriod;
 use app\repository\SqlTimeZoneRepository;
-use app\service\interfaces\ExternalDataServiceInterface;
-use Cassandra\Date;
 use DateTime;
-use DateTimeZone;
 use PDO;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -36,27 +31,31 @@ class GetDataService
      * @return false|string
      * @throws \app\domain\exception\ValueException
      */
-    public function getUtcTime(string $uuid, int $timestamp) {
+    public function getUtcTime(string $uuid, int $targetTimestamp) {
         $result = [];
         try{
             $uuid = Uuid::fromString($uuid);
-            $data = $this->getCorrectItem($uuid, $timestamp);
+            $data = $this->getCorrectItem($uuid, $targetTimestamp);
             $city = new City($uuid, $data['city_name']);
-            //Переданное в параметре время - локальное в стране
-            $localDatetime = new DateTime();
-            $localDatetime->setTimezone(new DateTimeZone($data['zone_name']));
-            $localDatetime->setTimestamp($timestamp);
 
-            $dst = (bool)$data['dst'];
-            //смещение в секундах
             $gmtOffset = new GmtOffset($data['gmt_offset']);
-            if($data['zone_end'] && strtotime($data['zone_end']) < $timestamp) {
-                $dst = !$dst;
-                $gmtOffset->applyDst($dst);
-            }
-            $utc0Datetime = $city->getUtc0FromLocal($localDatetime, $gmtOffset);
+            $timeZonePeriod = new TimeZonePeriod(
+                $city,
+                $data['zone_name'],
+                new DateTime($data['zone_start']),
+                $gmtOffset,
+                $data['dst'],
+            );
+
+            $targetDatetime = (new DateTime())->setTimestamp($targetTimestamp);
+            $timeZonePeriod->setTargetDatetime($targetDatetime);
+            $timeZonePeriod->setZoneEnd(new DateTime($data['zone_end']));
+            $timeZonePeriod->calcUtcDatetime();
+            $utc0Datetime = $timeZonePeriod->getUtcDatetime();
+            $dst = $timeZonePeriod->getDst();
+
             $result['param_city_id'] = $uuid->toString();
-            $result['param_time'] = $localDatetime->format('Y-m-d H:i:s');
+            $result['param_time'] = ($targetDatetime)->format('Y-m-d H:i:s');
             $result['city_name'] = $data['city_name'];
             $result['zone_name'] = $data['zone_name'];
             $result['utc0_time'] = $utc0Datetime->format('Y-m-d H:i:s');
@@ -77,27 +76,32 @@ class GetDataService
      * @return false|string
      * @throws \app\domain\exception\ValueException
      */
-    public function getLocalTime(string $uuid, int $timestamp) {
+    public function getLocalTime(string $uuid, int $targetTimestamp) {
         $result = [];
         try{
             $uuid = Uuid::fromString($uuid);
-            $data = $this->getCorrectItem($uuid, $timestamp);
+            $data = $this->getCorrectItem($uuid, $targetTimestamp);
             $city = new City($uuid, $data['city_name']);
-            //Переданное в параметре время UTC-0
-            $utcDatetime = new DateTime();
-            $utcDatetime->setTimezone(new DateTimeZone('UTC'));
-            $utcDatetime->setTimestamp($timestamp);
-            $dst = $data['dst'];
-            //смещение в секундах
+
             $gmtOffset = new GmtOffset($data['gmt_offset']);
-            if($data['zone_end'] && strtotime($data['zone_end']) < $timestamp) {
-                $dst = !$dst;
-                $gmtOffset->applyDst($dst);
-            }
-            $localDatetime = $city->getLocalFromUtc0($utcDatetime, $gmtOffset);
+            $timeZonePeriod = new TimeZonePeriod(
+                $city,
+                $data['zone_name'],
+                new DateTime($data['zone_start']),
+                $gmtOffset,
+                $data['dst'],
+            );
+
+            //Какую дату проверяем
+            $targetDatetime = (new DateTime())->setTimestamp($targetTimestamp);
+            $timeZonePeriod->setTargetDatetime($targetDatetime);
+            $timeZonePeriod->setZoneEnd(new DateTime($data['zone_end']));
+            $timeZonePeriod->calcLocalDatetime();
+            $localDatetime = $timeZonePeriod->getLocalDatetime();
+            $dst = $timeZonePeriod->getDst();
 
             $result['param_city_id'] = $uuid->toString();
-            $result['param_time'] = $utcDatetime->format('Y-m-d H:i:s');
+            $result['param_time'] = $targetDatetime->format('Y-m-d H:i:s');
             $result['city_name'] = $data['city_name'];
             $result['zone_name'] = $data['zone_name'];
             $result['local_time'] = $localDatetime->format('Y-m-d H:i:s');
