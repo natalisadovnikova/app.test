@@ -49,7 +49,9 @@ class GetDataService
 
             $targetDatetime = (new DateTime())->setTimestamp($targetTimestamp);
             $timeZonePeriod->setTargetDatetime($targetDatetime);
-            $timeZonePeriod->setZoneEnd(new DateTime($data['zone_end']));
+            if($data['zone_end']) {
+                $timeZonePeriod->setZoneEnd(new DateTime($data['zone_end']));
+            }
             $timeZonePeriod->calcUtcDatetime();
             $utc0Datetime = $timeZonePeriod->getUtcDatetime();
             $dst = $timeZonePeriod->getDst();
@@ -95,7 +97,9 @@ class GetDataService
             //Какую дату проверяем
             $targetDatetime = (new DateTime())->setTimestamp($targetTimestamp);
             $timeZonePeriod->setTargetDatetime($targetDatetime);
-            $timeZonePeriod->setZoneEnd(new DateTime($data['zone_end']));
+            if($data['zone_end']) {
+                $timeZonePeriod->setZoneEnd(new DateTime($data['zone_end']));
+            }
             $timeZonePeriod->calcLocalDatetime();
             $localDatetime = $timeZonePeriod->getLocalDatetime();
             $dst = $timeZonePeriod->getDst();
