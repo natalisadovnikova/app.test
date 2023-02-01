@@ -17,6 +17,7 @@ class CityTest extends TestCase
         $ob = new City($uuid, 'Moscow');
         $this->assertEquals('Moscow', $ob->getName());
     }
+
     public function testId()
     {
         $uuid = Uuid::fromInteger(time());
@@ -33,14 +34,14 @@ class CityTest extends TestCase
         $utcDatetime->setTimezone(new DateTimeZone('UTC'));
 
         //положительное смещение
-        $seconds = 3*60*60;
+        $seconds = 3 * 60 * 60;
         $offset = new GmtOffset($seconds);
         $localDatetime = $ob->getLocalFromUtc0($utcDatetime, $offset);
         //нужный тип
-        $this->assertInstanceOf("DateTime",$localDatetime);
+        $this->assertInstanceOf("DateTime", $localDatetime);
         //Разница в секундах
         $diff = $utcDatetime->diff($localDatetime);
-        $secondsDiff =  $diff->h * 60 * 60 + $diff->i * 60 + $diff->s;
+        $secondsDiff = $diff->h * 60 * 60 + $diff->i * 60 + $diff->s;
 
 //        var_dump($utcDatetime->format('Y-m-d H:i:s'));
 //        var_dump($localDatetime->format('Y-m-d H:i:s'));
@@ -49,15 +50,15 @@ class CityTest extends TestCase
         $this->assertEquals($diff->invert, 0);
 
         //отрицательное смещение
-        $seconds = -3*60*60;
+        $seconds = -3 * 60 * 60;
         $offset = new GmtOffset($seconds);
         $localDatetime = $ob->getLocalFromUtc0($utcDatetime, $offset);
         //нужный тип
-        $this->assertInstanceOf("DateTime",$localDatetime);
+        $this->assertInstanceOf("DateTime", $localDatetime);
         //Разница в секундах
         $diff = $utcDatetime->diff($localDatetime);
 
-        $secondsDiff =   $diff->h * 60 * 60 + $diff->i * 60 + $diff->s;
+        $secondsDiff = $diff->h * 60 * 60 + $diff->i * 60 + $diff->s;
 
 //        var_dump($diff->invert);
 //        var_dump($utcDatetime->format('Y-m-d H:i:s'));
@@ -76,15 +77,15 @@ class CityTest extends TestCase
         $localDatetime->setTimezone(new DateTimeZone('Europe/Moscow'));
 
         //положительное смещение
-        $seconds = 3*60*60;
+        $seconds = 3 * 60 * 60;
         $offset = new GmtOffset($seconds);
         $utc0Datetime = $ob->getUtc0FromLocal($localDatetime, $offset);
         //нужный тип
-        $this->assertInstanceOf("DateTime",$utc0Datetime);
+        $this->assertInstanceOf("DateTime", $utc0Datetime);
 
         //Разница в секундах
         $diff = $localDatetime->diff($utc0Datetime);
-        $secondsDiff =  $diff->h * 60 * 60 + $diff->i * 60 + $diff->s;
+        $secondsDiff = $diff->h * 60 * 60 + $diff->i * 60 + $diff->s;
 
 //        var_dump($localDatetime->format('Y-m-d H:i:s'));
 //        var_dump($utc0Datetime->format('Y-m-d H:i:s'));
@@ -93,16 +94,16 @@ class CityTest extends TestCase
         $this->assertEquals($diff->invert, 1);
 
         //отрицательное смещение
-        $seconds = -3*60*60;
+        $seconds = -3 * 60 * 60;
         $offset = new GmtOffset($seconds);
         $localDatetime->setTimezone(new DateTimeZone('America/Sao_Paulo'));
         $utc0Datetime = $ob->getUtc0FromLocal($localDatetime, $offset);
 
         //нужный тип
-        $this->assertInstanceOf("DateTime",$utc0Datetime);
+        $this->assertInstanceOf("DateTime", $utc0Datetime);
         //Разница в секундах
         $diff = $localDatetime->diff($utc0Datetime);
-        $secondsDiff =  $diff->h * 60 * 60 + $diff->i * 60 + $diff->s;
+        $secondsDiff = $diff->h * 60 * 60 + $diff->i * 60 + $diff->s;
 
 //        var_dump($diff->invert);
 //        var_dump($localDatetime->format('Y-m-d H:i:s'));

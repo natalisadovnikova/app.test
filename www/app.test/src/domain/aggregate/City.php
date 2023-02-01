@@ -17,18 +17,28 @@ class City
     private Longitude $longitude;
     private CountryIso3 $countryIso3;
 
+    /**
+     * @param UuidInterface $id
+     * @param string $name
+     */
     public function __construct(UuidInterface $id, string $name)
     {
         $this->id = $id;
         $this->name = $name;
     }
 
+    /**
+     * @return UuidInterface
+     */
     public function getId(): UuidInterface
     {
         return $this->id;
     }
 
 
+    /**
+     * @return string
+     */
     public function getName(): string
     {
         return $this->name;
@@ -66,7 +76,7 @@ class City
      * @param Latitude $latitude
      * @return void
      */
-    public function setLatitude(Latitude $latitude)
+    public function setLatitude(Latitude $latitude): void
     {
         $this->latitude = $latitude;
     }
@@ -84,7 +94,7 @@ class City
      * @param Longitude $longitude
      * @return void
      */
-    public function setLongitude(Longitude $longitude)
+    public function setLongitude(Longitude $longitude): void
     {
         $this->longitude = $longitude;
     }
@@ -102,7 +112,7 @@ class City
      * @param CountryIso3 $countryIso3
      * @return void
      */
-    public function setCountryIso3(CountryIso3 $countryIso3)
+    public function setCountryIso3(CountryIso3 $countryIso3): void
     {
         $this->countryIso3 = $countryIso3;
     }

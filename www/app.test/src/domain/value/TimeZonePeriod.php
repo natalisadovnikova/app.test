@@ -12,39 +12,45 @@ class TimeZonePeriod
     private City $city;
     private string $zoneName;
     private DateTime $zoneStart;
-    private ?DateTime $zoneEnd;
+    private ?DateTime $zoneEnd = null;
     private GmtOffset $gmtOffset;
     private bool $dstInit;
     private bool $dst;
-    private ?DateTime $localDatetime;
+    private ?DateTime $localDatetime = null;
     private ?DateTime $utcDatetime = null;
+
     /**
      * Какую дату проверяем
      * @var DateTime
      */
     private DateTime $targetDatetime;
 
-    public function __construct(City $city,string $zoneName, DateTime $zoneStart, GmtOffset $gmtOffset, bool $dstInit)
+    /**
+     * @param City $city
+     * @param string $zoneName
+     * @param DateTime $zoneStart
+     * @param GmtOffset $gmtOffset
+     * @param bool $dstInit
+     */
+    public function __construct(City $city, string $zoneName, DateTime $zoneStart, GmtOffset $gmtOffset, bool $dstInit)
     {
         $this->city = $city;
         $this->zoneName = $zoneName;
         $this->zoneStart = $zoneStart;
         $this->gmtOffset = $gmtOffset;
         $this->dstInit = $dstInit;
-        $this->zoneEnd = null;
-        $this->localDatetime = null;
     }
 
     /**
-     * Получение локального времени в городе по переданному идентификатору города и метке времени по UTC+0.
+     * Получение локального времени в городе по метке времени по UTC+0.
      * если временная метка выходит за границы загруженных данных
      * считать gmt_offset меньше или больше на 1 час для следующего периода
      * @return void
      * @throws \app\domain\exception\ValueException
      */
-    public function calcLocalDatetime()
+    public function calcLocalDatetime(): void
     {
-        if(!$this->targetDatetime) {
+        if (!$this->targetDatetime) {
             throw new ValueException('set target datetime');
         }
 
@@ -54,17 +60,24 @@ class TimeZonePeriod
 
         $this->dst = $this->dstInit;
         //если переданная метка времени вышла за границу периода
-        if($this->zoneEnd && $this->zoneEnd < $utcDatetime) {
+        if ($this->zoneEnd && $this->zoneEnd < $utcDatetime) {
             $this->dst = !$this->dst;
             $this->gmtOffset->applyDst($this->dst);
         }
         $this->localDatetime = $this->city->getLocalFromUtc0($utcDatetime, $this->gmtOffset);
-
     }
 
-    public function calcUtcDatetime()
+    /**
+     * Обратное преобразование из локального времени в метку времени по UTC+0.
+     * если временная метка выходит за границы загруженных данных
+     * считать gmt_offset меньше или больше на 1 час для следующего периода
+     * в зависимости от параметра  dst
+     * @return void
+     * @throws ValueException
+     */
+    public function calcUtcDatetime(): void
     {
-        if(!$this->targetDatetime) {
+        if (!$this->targetDatetime) {
             throw new ValueException('set target datetime');
         }
 
@@ -74,7 +87,7 @@ class TimeZonePeriod
 
         $this->dst = $this->dstInit;
         //если переданная метка времени вышла за границу периода
-        if($this->zoneEnd && $this->zoneEnd < $localDatetime) {
+        if ($this->zoneEnd && $this->zoneEnd < $localDatetime) {
             $this->dst = !$this->dst;
             $this->gmtOffset->applyDst($this->dst);
         }
@@ -85,9 +98,9 @@ class TimeZonePeriod
      * @return DateTime
      * @throws ValueException
      */
-    public function getLocalDatetime()
+    public function getLocalDatetime(): DateTime
     {
-        if(!$this->localDatetime) {
+        if (!$this->localDatetime) {
             throw new ValueException('make calcLocalDatetime method');
         }
         return $this->localDatetime;
@@ -97,14 +110,13 @@ class TimeZonePeriod
      * @return DateTime
      * @throws ValueException
      */
-    public function getUtcDatetime()
+    public function getUtcDatetime(): DateTime
     {
-        if(!$this->utcDatetime) {
+        if (!$this->utcDatetime) {
             throw new ValueException('make calcUtcDatetime method');
         }
         return $this->utcDatetime;
     }
-
 
 
     /**
@@ -123,12 +135,12 @@ class TimeZonePeriod
      * @param DateTime $zoneEnd
      * @return void
      */
-    public function setZoneEnd(DateTime $zoneEnd)
+    public function setZoneEnd(DateTime $zoneEnd): void
     {
         $this->zoneEnd = $zoneEnd;
     }
 
-    public function getDst()
+    public function getDst(): bool
     {
         return $this->dst;
     }

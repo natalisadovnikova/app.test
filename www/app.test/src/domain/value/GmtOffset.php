@@ -45,9 +45,9 @@ class GmtOffset
      * Применить смещение на 1 час в случае введения летнего времени
      * @return void
      */
-    public function applyDst(bool $isDst = false)
+    public function applyDst(bool $isDst = false): void
     {
-        if($isDst) {
+        if ($isDst) {
             //при вводе летнего времени часы переводят на час вперед, gmt_offset = gmt_offset + 1*60*60
             $this->offset += 3600;
         } else {
@@ -55,6 +55,7 @@ class GmtOffset
             $this->offset -= 3600;
         }
     }
+
     /**
      * @param $offset
      * @return void
@@ -62,16 +63,14 @@ class GmtOffset
      */
     private function validateOffset($offset): void
     {
-        if(!is_int($offset)) {
+        if (!is_int($offset)) {
             throw new ValueException('incorrect offset');
         }
 
-        if($offset > self::MAX_POSITIVE_OFFSET || $offset < self::MAX_NEGATIVE_OFFSET) {
+        if ($offset > self::MAX_POSITIVE_OFFSET || $offset < self::MAX_NEGATIVE_OFFSET) {
             throw new ValueException('incorrect offset');
         }
-        
     }
-
 
     /**
      * @return int

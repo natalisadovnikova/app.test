@@ -13,6 +13,7 @@ class LongitudeTest extends TestCase
         $ob = new Longitude(20);
         $this->assertEquals(20, $ob->getValue());
     }
+
     public function testBigValueException()
     {
         $this->expectException(ValueException::class);

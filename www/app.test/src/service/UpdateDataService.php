@@ -1,4 +1,5 @@
 <?php
+
 namespace app\service;
 
 use app\repository\SqlCityRepository;
@@ -10,11 +11,20 @@ class UpdateDataService
 {
     private $pdo;
 
+    /**
+     * @param PDO $pdo
+     */
     public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
     }
 
+    /**
+     * Запуск процесса обновления данных
+     * @return void
+     * @throws \app\domain\exception\CityNotFoundException
+     * @throws \app\domain\exception\ExternalDataProblemException
+     */
     public function run()
     {
         $dataService = new ExternalDataService();
@@ -23,12 +33,11 @@ class UpdateDataService
         $timeZoneService = new UpdateTimeZoneService($cityRepository, $timeZoneRepository);
 
         $allCitiesIds = $cityRepository->findAll();
-        foreach ($allCitiesIds as $citiesId){
+        foreach ($allCitiesIds as $citiesId) {
             $uuid = Uuid::fromString($citiesId['id']);
             $timeZoneService->updateData($uuid, $dataService);
             //todo задания на обновления данных надо ставить в очередь
             sleep(2);
-
         }
     }
 

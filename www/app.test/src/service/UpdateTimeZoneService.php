@@ -1,4 +1,5 @@
 <?php
+
 namespace app\service;
 
 
@@ -13,19 +14,31 @@ class UpdateTimeZoneService implements \app\service\interfaces\UpdateTimeZoneSer
     private $cityRepository;
     private $timeZoneRepository;
 
-    public function __construct(CityRepositoryInterface $cityRepository,TimeZoneRepositoryInterface $timeZoneRepository)
-    {
+    /**
+     * @param CityRepositoryInterface $cityRepository
+     * @param TimeZoneRepositoryInterface $timeZoneRepository
+     */
+    public function __construct(
+        CityRepositoryInterface $cityRepository,
+        TimeZoneRepositoryInterface $timeZoneRepository
+    ) {
         $this->cityRepository = $cityRepository;
         $this->timeZoneRepository = $timeZoneRepository;
     }
 
-    public function updateData(UuidInterface $uuid, ExternalDataServiceInterface $dataService)
+    /**
+     * @param UuidInterface $uuid
+     * @param ExternalDataServiceInterface $dataService
+     * @return void
+     * @throws ExternalDataProblemException
+     * @throws \app\domain\exception\CityNotFoundException
+     */
+    public function updateData(UuidInterface $uuid, ExternalDataServiceInterface $dataService): void
     {
         $city = $this->cityRepository->findById($uuid);
         $this->timeZoneRepository->setCityId($city->getId());
 
-        if($this->timeZoneRepository->needFreshData())
-        {
+        if ($this->timeZoneRepository->needFreshData()) {
             $data = false;
             $errorMsg = "";
             try {
@@ -35,12 +48,11 @@ class UpdateTimeZoneService implements \app\service\interfaces\UpdateTimeZoneSer
                 //todo залогировать ошибку
             }
 
-            if(!$data || !isset($data['status']) || $data['status'] != 'OK') {
+            if (!$data || !isset($data['status']) || $data['status'] != 'OK') {
                 throw new ExternalDataProblemException($errorMsg);
             }
             $this->timeZoneRepository->refreshData($data);
         }
-
     }
 
 

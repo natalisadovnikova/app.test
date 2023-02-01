@@ -17,13 +17,21 @@ class Latitude
         $this->value = $value;
     }
 
-    private function validateValue($value)
+    /**
+     * @param $value
+     * @return void
+     * @throws ValueException
+     */
+    private function validateValue($value): void
     {
-        if($value > self::MAX_VALUE || $value < self::MIN_VALUE) {
+        if ($value > self::MAX_VALUE || $value < self::MIN_VALUE) {
             throw new ValueException('incorrect value');
         }
     }
 
+    /**
+     * @return float
+     */
     public function getValue()
     {
         return $this->value;

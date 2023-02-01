@@ -16,7 +16,7 @@ class LocalTimeTest extends TestCase
         $data = [
             "city_id" => "3ef2f49f-7543-431e-890d-fceae99c97d8",
             "city_name" => "Craig Municipal Airport",
-            "zone_name" =>"America/New_York",
+            "zone_name" => "America/New_York",
             "dst" => 0,
             "gmt_offset" => "-18000",
             "zone_start" => "2022-11-06 09:00:00",
@@ -24,7 +24,7 @@ class LocalTimeTest extends TestCase
         ];
 
 
-        $city = new City( Uuid::fromString($data["city_id"]), $data['city_name']);
+        $city = new City(Uuid::fromString($data["city_id"]), $data['city_name']);
         $gmtOffset = new GmtOffset($data['gmt_offset']);
         $timeZonePeriod = new TimeZonePeriod(
             $city,
@@ -37,7 +37,7 @@ class LocalTimeTest extends TestCase
         //Какую дату проверяем
         $targetTimestamp = 1678621920;
         $timeZonePeriod->setTargetDatetime((new DateTime())->setTimestamp($targetTimestamp));
-        if($data['zone_end']) {
+        if ($data['zone_end']) {
             $timeZonePeriod->setZoneEnd(new DateTime($data['zone_end']));
         }
         $timeZonePeriod->calcLocalDatetime();
@@ -48,7 +48,6 @@ class LocalTimeTest extends TestCase
 
         $this->assertEquals($expectedLocalTime, $localDatetime->format("Y-m-d H:i:s"));
         $this->assertEquals($expectedDst, $timeZonePeriod->getDst());
-
     }
 
     public function testCorrectLocalTimeWithoutEnd()
@@ -56,7 +55,7 @@ class LocalTimeTest extends TestCase
         $data = [
             "city_id" => "746bdf1d-d154-46cd-b104-9415fcc39e35",
             "city_name" => "Midrand",
-            "zone_name" =>"Africa/Johannesburg",
+            "zone_name" => "Africa/Johannesburg",
             "dst" => 0,
             "gmt_offset" => "7200",
             "zone_start" => "1995-10-16 04:00:00",
@@ -64,7 +63,7 @@ class LocalTimeTest extends TestCase
         ];
 
 
-        $city = new City( Uuid::fromString($data["city_id"]), $data['city_name']);
+        $city = new City(Uuid::fromString($data["city_id"]), $data['city_name']);
         $gmtOffset = new GmtOffset($data['gmt_offset']);
         $timeZonePeriod = new TimeZonePeriod(
             $city,
@@ -77,7 +76,7 @@ class LocalTimeTest extends TestCase
         //Какую дату проверяем
         $targetTimestamp = 1678621920;
         $timeZonePeriod->setTargetDatetime((new DateTime())->setTimestamp($targetTimestamp));
-        if($data['zone_end']) {
+        if ($data['zone_end']) {
             $timeZonePeriod->setZoneEnd(new DateTime($data['zone_end']));
         }
 
@@ -89,7 +88,6 @@ class LocalTimeTest extends TestCase
 
         $this->assertEquals($expectedLocalTime, $localDatetime->format("Y-m-d H:i:s"));
         $this->assertEquals($expectedDst, $timeZonePeriod->getDst());
-
     }
 
     public function testCorrectUtcTime()
@@ -97,7 +95,7 @@ class LocalTimeTest extends TestCase
         $data = [
             "city_id" => "3ef2f49f-7543-431e-890d-fceae99c97d8",
             "city_name" => "Craig Municipal Airport",
-            "zone_name" =>"America/New_York",
+            "zone_name" => "America/New_York",
             "dst" => 0,
             "gmt_offset" => "-18000",
             "zone_start" => "2022-11-06 09:00:00",
@@ -105,7 +103,7 @@ class LocalTimeTest extends TestCase
         ];
 
 
-        $city = new City( Uuid::fromString($data["city_id"]), $data['city_name']);
+        $city = new City(Uuid::fromString($data["city_id"]), $data['city_name']);
         $gmtOffset = new GmtOffset($data['gmt_offset']);
         $timeZonePeriod = new TimeZonePeriod(
             $city,
@@ -118,7 +116,7 @@ class LocalTimeTest extends TestCase
         //Какую дату проверяем
         $targetTimestamp = 1678621920;
         $timeZonePeriod->setTargetDatetime((new DateTime())->setTimestamp($targetTimestamp));
-        if($data['zone_end']) {
+        if ($data['zone_end']) {
             $timeZonePeriod->setZoneEnd(new DateTime($data['zone_end']));
         }
         $timeZonePeriod->calcUtcDatetime();
@@ -129,7 +127,6 @@ class LocalTimeTest extends TestCase
 
         $this->assertEquals($expectedLocalTime, $utcDatetime->format("Y-m-d H:i:s"));
         $this->assertEquals($expectedDst, $timeZonePeriod->getDst());
-
     }
 
     public function testCorrectUtcTimeWithoutEnd()
@@ -137,7 +134,7 @@ class LocalTimeTest extends TestCase
         $data = [
             "city_id" => "746bdf1d-d154-46cd-b104-9415fcc39e35",
             "city_name" => "Midrand",
-            "zone_name" =>"Africa/Johannesburg",
+            "zone_name" => "Africa/Johannesburg",
             "dst" => 0,
             "gmt_offset" => "7200",
             "zone_start" => "1995-10-16 04:00:00",
@@ -145,7 +142,7 @@ class LocalTimeTest extends TestCase
         ];
 
 
-        $city = new City( Uuid::fromString($data["city_id"]), $data['city_name']);
+        $city = new City(Uuid::fromString($data["city_id"]), $data['city_name']);
         $gmtOffset = new GmtOffset($data['gmt_offset']);
         $timeZonePeriod = new TimeZonePeriod(
             $city,
@@ -158,7 +155,7 @@ class LocalTimeTest extends TestCase
         //Какую дату проверяем
         $targetTimestamp = 1678621920;
         $timeZonePeriod->setTargetDatetime((new DateTime())->setTimestamp($targetTimestamp));
-        if($data['zone_end']) {
+        if ($data['zone_end']) {
             $timeZonePeriod->setZoneEnd(new DateTime($data['zone_end']));
         }
         $timeZonePeriod->calcUtcDatetime();
@@ -169,6 +166,5 @@ class LocalTimeTest extends TestCase
 
         $this->assertEquals($expectedLocalTime, $utcDatetime->format("Y-m-d H:i:s"));
         $this->assertEquals($expectedDst, $timeZonePeriod->getDst());
-
     }
 }

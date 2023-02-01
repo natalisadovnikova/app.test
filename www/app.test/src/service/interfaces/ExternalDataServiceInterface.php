@@ -1,4 +1,5 @@
 <?php
+
 namespace app\service\interfaces;
 
 use app\domain\value\Latitude;

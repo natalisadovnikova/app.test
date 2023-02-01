@@ -1,4 +1,5 @@
 <?php
+
 namespace app\service;
 
 use app\domain\value\Latitude;
@@ -34,7 +35,7 @@ class ExternalDataService implements \app\service\interfaces\ExternalDataService
      * @return string
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getData(Longitude $lng, Latitude $ltd)
+    public function getData(Longitude $lng, Latitude $ltd): array
     {
         $this->clientData['lat'] = $ltd->getValue();
         $this->clientData['lng'] = $lng->getValue();
@@ -51,28 +52,40 @@ class ExternalDataService implements \app\service\interfaces\ExternalDataService
 
         $content = $body->getContents();
         return json_decode($content, true);
-
     }
 
-    function createUrl($host, $method, $append_params = []) {
-        $res = $host.$method;
-        if(count($append_params)) {
-            $res = $res.'?'.$this->bindParams($append_params);
+    /**
+     * Сборка урла
+     * @param $host
+     * @param $method
+     * @param $append_params
+     * @return string
+     */
+    function createUrl($host, $method, $append_params = [])
+    {
+        $res = $host . $method;
+        if (count($append_params)) {
+            $res = $res . '?' . $this->bindParams($append_params);
         }
         return $res;
     }
 
-    function bindParams($params) {
+    /**
+     * Подготовка параметров
+     * @param $params
+     * @return string
+     */
+    function bindParams($params)
+    {
         $u = [];
-        foreach($params as $k=>$param) {
-            if(is_array($param)) {
-                foreach($param as $p ) {
-                    $u[] = $k."=".urlencode($p);
+        foreach ($params as $k => $param) {
+            if (is_array($param)) {
+                foreach ($param as $p) {
+                    $u[] = $k . "=" . urlencode($p);
                 }
             } else {
-                $u[] = $k."=".urlencode($param);
+                $u[] = $k . "=" . urlencode($param);
             }
-
         }
         asort($u);
         return implode('&', $u);
