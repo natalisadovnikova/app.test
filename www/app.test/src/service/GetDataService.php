@@ -117,21 +117,10 @@ class GetDataService
         $timeZoneRepository->setCityId($uuid);
 
         foreach ($timeZoneRepository->getItems() as $item) {
-
             $zoneStart = new \DateTime($item['zone_start']);
-            $zoneEnd = new \DateTime($item['zone_end']);
-
             if($zoneStart->getTimestamp() > $timestamp ) {
                 continue;
             }
-
-//            if($zoneStart->getTimestamp() > $timestamp ) {
-//                continue;
-//            }
-//
-//            if($item['zone_end'] && $zoneEnd->getTimestamp() < $timestamp) {
-//                continue;
-//            }
             return $item;
         }
 
