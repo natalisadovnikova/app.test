@@ -63,6 +63,9 @@ docker-compose run phpunit unitTest
 
 docker exec -it php /bin/bash
 
-и запустить команду
+и запустить команду для постановки задач в очередь для обновления
 
 php console.php
+
+для прослушивания очереди
+php listener.php
