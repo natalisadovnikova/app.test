@@ -47,6 +47,22 @@ services:
     networks:
       - mynet
 
+  rabbitmq:
+    hostname: 'dev-rabbitmq'
+    image: rabbitmq:3.11-management
+    container_name: 'rabbitmq'
+    restart: always
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - '~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/mnesia/'
+    environment:
+      RABBITMQ_DEFAULT_USER: rmq_test
+      RABBITMQ_DEFAULT_PASS: rmq_test
+    networks:
+      - mynet
+
   phpunit:
     image: php:7.4-cli
     container_name: phpunit

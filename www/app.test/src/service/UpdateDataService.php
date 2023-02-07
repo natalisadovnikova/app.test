@@ -3,9 +3,7 @@
 namespace app\service;
 
 use app\repository\SqlCityRepository;
-use app\repository\SqlTimeZoneRepository;
 use PDO;
-use Ramsey\Uuid\Uuid;
 
 class UpdateDataService
 {
@@ -21,23 +19,19 @@ class UpdateDataService
 
     /**
      * Запуск процесса обновления данных
+     * Ставит задачи в очередь
      * @return void
      * @throws \app\domain\exception\CityNotFoundException
      * @throws \app\domain\exception\ExternalDataProblemException
      */
     public function run()
     {
-        $dataService = new ExternalDataService();
         $cityRepository = new SqlCityRepository($this->pdo);
-        $timeZoneRepository = new SqlTimeZoneRepository($this->pdo);
-        $timeZoneService = new UpdateTimeZoneService($cityRepository, $timeZoneRepository);
-
         $allCitiesIds = $cityRepository->findAll();
+        $rmqService = new RMQService('dev-ex');
         foreach ($allCitiesIds as $citiesId) {
-            $uuid = Uuid::fromString($citiesId['id']);
-            $timeZoneService->updateData($uuid, $dataService);
-            //todo задания на обновления данных надо ставить в очередь
-            sleep(2);
+            //задания на обновления данных ставим в очередь
+            $rmqService->sendMessageToQueue($citiesId['id']);
         }
     }
 
