@@ -11,7 +11,7 @@ use PDO;
 class SqlTimeZoneRepository implements TimeZoneRepositoryInterface
 {
     private $pdo;
-    private $items = [];
+    private $items;
     private UuidInterface $cityUuid;
 
     public function __construct(PDO $pdo)
@@ -19,19 +19,15 @@ class SqlTimeZoneRepository implements TimeZoneRepositoryInterface
         $this->pdo = $pdo;
     }
 
+    /**
+     * @param UuidInterface $cityUuid
+     * @return void
+     */
     public function setCityId(UuidInterface $cityUuid)
     {
         $this->cityUuid = $cityUuid;
-
-        $this->loadItems();
     }
 
-    private function loadItems()
-    {
-        $stmt = $this->pdo->prepare("SELECT  * FROM timezone_items WHERE `city_id` = :id ORDER BY zone_start DESC");
-        $stmt->execute(['id' => $this->cityUuid->toString()]);
-        $this->items = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
 
     /**
      * Записи
@@ -39,7 +35,20 @@ class SqlTimeZoneRepository implements TimeZoneRepositoryInterface
      */
     public function getItems()
     {
+        if(is_null($this->items)) {
+            $this->loadItems();
+        }
         return $this->items;
+    }
+
+    /**
+     * @return void
+     */
+    private function loadItems()
+    {
+        $stmt = $this->pdo->prepare("SELECT  * FROM timezone_items WHERE `city_id` = :id ORDER BY zone_start DESC");
+        $stmt->execute(['id' => $this->cityUuid->toString()]);
+        $this->items = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
