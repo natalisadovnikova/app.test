@@ -14,6 +14,7 @@ class RMQService
     public function __construct($queueName)
     {
         $this->queueName = $queueName;
+        //todo настройки вынести в параметры
         $this->connection = new AMQPStreamConnection('dev-rabbitmq', 5672, 'rmq_test', 'rmq_test');
         $this->channel = $this->connection->channel();
     }
