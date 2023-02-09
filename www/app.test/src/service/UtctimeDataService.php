@@ -6,7 +6,7 @@ namespace app\service;
 use app\domain\aggregate\City;
 use app\domain\exception\DataNotFoundException;
 use app\domain\value\GmtOffset;
-use app\domain\value\TimeZonePeriod;
+use app\domain\value\TimeZonePeriodUtc;
 use app\service\interfaces\TimeZoneIntevalDataServiceInterface;
 use DateTime;
 use Ramsey\Uuid\Uuid;
@@ -42,28 +42,27 @@ class UtctimeDataService
             $city = new City($uuid, $data['city_name']);
 
             $gmtOffset = new GmtOffset($data['gmt_offset']);
-            $timeZonePeriod = new TimeZonePeriod(
+            $timeZonePeriodUtc = new TimeZonePeriodUtc(
                 $city,
                 $data['zone_name'],
-                new DateTime($data['zone_start']),
                 $gmtOffset,
                 $data['dst'],
             );
 
             $targetDatetime = (new DateTime())->setTimestamp($targetTimestamp);
-            $timeZonePeriod->setTargetDatetime($targetDatetime);
+            $timeZonePeriodUtc->setTargetDatetime($targetDatetime);
             if ($data['zone_end']) {
-                $timeZonePeriod->setZoneEnd(new DateTime($data['zone_end']));
+                $timeZonePeriodUtc->setZoneEnd(new DateTime($data['zone_end']));
             }
 
-            $utc0Datetime = $timeZonePeriod->getUtcDatetime();
+            $utc0Datetime = $timeZonePeriodUtc->getResulDatetime();
 
             $result['param_city_id'] = $uuid->toString();
             $result['param_time'] = ($targetDatetime)->format('Y-m-d H:i:s');
             $result['city_name'] = $data['city_name'];
             $result['zone_name'] = $data['zone_name'];
             $result['utc0_time'] = $utc0Datetime->format('Y-m-d H:i:s');
-            $result['is_summer_time'] = $timeZonePeriod->getDst();
+            $result['is_summer_time'] = $timeZonePeriodUtc->getDst();
             $result = ['success' => true, "data" => $result];
         } catch (DataNotFoundException $e) {
             $result = ['success' => false, 'error' => 'data not found'];

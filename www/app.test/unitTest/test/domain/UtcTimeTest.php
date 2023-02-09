@@ -4,14 +4,14 @@ namespace unitTests\test\domain;
 
 use app\domain\aggregate\City;
 use app\domain\value\GmtOffset;
-use app\domain\value\TimeZonePeriodLocal;
+use app\domain\value\TimeZonePeriodUtc;
 use DateTime;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
-class LocalTimeTest extends TestCase
+class UtcTimeTest extends TestCase
 {
-    public function testCorrectLocalTime()
+    public function testCorrectUtcTime()
     {
         $data = [
             "city_id" => "3ef2f49f-7543-431e-890d-fceae99c97d8",
@@ -26,7 +26,7 @@ class LocalTimeTest extends TestCase
 
         $city = new City(Uuid::fromString($data["city_id"]), $data['city_name']);
         $gmtOffset = new GmtOffset($data['gmt_offset']);
-        $timeZonePeriodLocal = new TimeZonePeriodLocal(
+        $timeZonePeriodUtc = new TimeZonePeriodUtc(
             $city,
             $data['zone_name'],
             $gmtOffset,
@@ -35,20 +35,20 @@ class LocalTimeTest extends TestCase
 
         //Какую дату проверяем
         $targetTimestamp = 1678621920;
-        $timeZonePeriodLocal->setTargetDatetime((new DateTime())->setTimestamp($targetTimestamp));
+        $timeZonePeriodUtc->setTargetDatetime((new DateTime())->setTimestamp($targetTimestamp));
         if ($data['zone_end']) {
-            $timeZonePeriodLocal->setZoneEnd(new DateTime($data['zone_end']));
+            $timeZonePeriodUtc->setZoneEnd(new DateTime($data['zone_end']));
         }
 
-        $expectedLocalTime = "2023-03-12 07:52:00";
+        $expectedLocalTime = "2023-03-12 11:52:00";
         $expectedDst = true;
-        $localDatetime = $timeZonePeriodLocal->getResulDatetime();
+        $utcDatetime = $timeZonePeriodUtc->getResulDatetime();
 
-        $this->assertEquals($expectedLocalTime, $localDatetime->format("Y-m-d H:i:s"));
-        $this->assertEquals($expectedDst, $timeZonePeriodLocal->getDst());
+        $this->assertEquals($expectedLocalTime, $utcDatetime->format("Y-m-d H:i:s"));
+        $this->assertEquals($expectedDst, $timeZonePeriodUtc->getDst());
     }
 
-    public function testCorrectLocalTimeWithoutEnd()
+    public function testCorrectUtcTimeWithoutEnd()
     {
         $data = [
             "city_id" => "746bdf1d-d154-46cd-b104-9415fcc39e35",
@@ -63,7 +63,7 @@ class LocalTimeTest extends TestCase
 
         $city = new City(Uuid::fromString($data["city_id"]), $data['city_name']);
         $gmtOffset = new GmtOffset($data['gmt_offset']);
-        $timeZonePeriodLocal = new TimeZonePeriodLocal(
+        $timeZonePeriodUtc = new TimeZonePeriodUtc(
             $city,
             $data['zone_name'],
             $gmtOffset,
@@ -72,16 +72,16 @@ class LocalTimeTest extends TestCase
 
         //Какую дату проверяем
         $targetTimestamp = 1678621920;
-        $timeZonePeriodLocal->setTargetDatetime((new DateTime())->setTimestamp($targetTimestamp));
+        $timeZonePeriodUtc->setTargetDatetime((new DateTime())->setTimestamp($targetTimestamp));
         if ($data['zone_end']) {
-            $timeZonePeriodLocal->setZoneEnd(new DateTime($data['zone_end']));
+            $timeZonePeriodUtc->setZoneEnd(new DateTime($data['zone_end']));
         }
 
-        $expectedLocalTime = "2023-03-12 13:52:00";
+        $expectedLocalTime = "2023-03-12 11:52:00";
         $expectedDst = false;
-        $localDatetime = $timeZonePeriodLocal->getResulDatetime();
+        $utcDatetime = $timeZonePeriodUtc->getResulDatetime();
 
-        $this->assertEquals($expectedLocalTime, $localDatetime->format("Y-m-d H:i:s"));
-        $this->assertEquals($expectedDst, $timeZonePeriodLocal->getDst());
+        $this->assertEquals($expectedLocalTime, $utcDatetime->format("Y-m-d H:i:s"));
+        $this->assertEquals($expectedDst, $timeZonePeriodUtc->getDst());
     }
 }
