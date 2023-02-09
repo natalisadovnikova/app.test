@@ -57,14 +57,21 @@ class TimeZonePeriod
         //Переданное в параметре время переводим в UTC-0
         $utcDatetime = $this->targetDatetime;
         $utcDatetime->setTimezone(new DateTimeZone('UTC'));
+        //Введение летнего или змнего времени
+        $this->applyDst($utcDatetime);
 
+        $this->localDatetime = $this->city->getLocalFromUtc0($utcDatetime, $this->gmtOffset);
+    }
+
+    //Проверить период на смену зимнего/летнего времени и применить смещение, если необходимо
+    private function applyDst(DateTime $dateTime)
+    {
         $this->dst = $this->dstInit;
         //если переданная метка времени вышла за границу периода
-        if ($this->zoneEnd && $this->zoneEnd < $utcDatetime) {
+        if ($this->zoneEnd && $this->zoneEnd < $dateTime) {
             $this->dst = !$this->dst;
             $this->gmtOffset->applyDst($this->dst);
         }
-        $this->localDatetime = $this->city->getLocalFromUtc0($utcDatetime, $this->gmtOffset);
     }
 
     /**
@@ -85,12 +92,9 @@ class TimeZonePeriod
         $localDatetime = $this->targetDatetime;
         $localDatetime->setTimezone(new DateTimeZone($this->zoneName));
 
-        $this->dst = $this->dstInit;
-        //если переданная метка времени вышла за границу периода
-        if ($this->zoneEnd && $this->zoneEnd < $localDatetime) {
-            $this->dst = !$this->dst;
-            $this->gmtOffset->applyDst($this->dst);
-        }
+        //Введение летнего или змнего времени
+        $this->applyDst($localDatetime);
+
         $this->utcDatetime = $this->city->getUtc0FromLocal($localDatetime, $this->gmtOffset);
     }
 
