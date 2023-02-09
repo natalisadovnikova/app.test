@@ -42,7 +42,7 @@ class TimeZonePeriod
     }
 
     /**
-     * Получение локального времени в городе по метке времени по UTC+0.
+     * Вычесление локального времени в городе по метке времени по UTC+0.
      * если временная метка выходит за границы загруженных данных
      * считать gmt_offset меньше или больше на 1 час для следующего периода
      * @return void
@@ -100,8 +100,8 @@ class TimeZonePeriod
      */
     public function getLocalDatetime(): DateTime
     {
-        if (!$this->localDatetime) {
-            throw new ValueException('make calcLocalDatetime method');
+        if (is_null($this->localDatetime)) {
+            $this->calcLocalDatetime();
         }
         return $this->localDatetime;
     }
@@ -113,15 +113,15 @@ class TimeZonePeriod
     public function getUtcDatetime(): DateTime
     {
         if (!$this->utcDatetime) {
-            throw new ValueException('make calcUtcDatetime method');
+            $this->calcUtcDatetime();
         }
         return $this->utcDatetime;
     }
 
 
     /**
-     * todo проверить что дата окончания больше даты начала
-     * @param DateTime $zoneEnd
+     * Дата, по которой ищем
+     * @param DateTime $targetDatetime
      * @return void
      */
     public function setTargetDatetime(DateTime $targetDatetime)
@@ -140,8 +140,17 @@ class TimeZonePeriod
         $this->zoneEnd = $zoneEnd;
     }
 
+    /**
+     * Получить значение, летнее время или нет
+     * @return bool
+     * @throws ValueException
+     */
     public function getDst(): bool
     {
+        if(is_null($this->dst))
+        {
+            $this->calcLocalDatetime();
+        }
         return $this->dst;
     }
 }

@@ -40,7 +40,6 @@ class LocalTimeTest extends TestCase
         if ($data['zone_end']) {
             $timeZonePeriod->setZoneEnd(new DateTime($data['zone_end']));
         }
-        $timeZonePeriod->calcLocalDatetime();
 
         $expectedLocalTime = "2023-03-12 07:52:00";
         $expectedDst = true;
@@ -80,8 +79,6 @@ class LocalTimeTest extends TestCase
             $timeZonePeriod->setZoneEnd(new DateTime($data['zone_end']));
         }
 
-        $timeZonePeriod->calcLocalDatetime();
-
         $expectedLocalTime = "2023-03-12 13:52:00";
         $expectedDst = false;
         $localDatetime = $timeZonePeriod->getLocalDatetime();
@@ -119,7 +116,6 @@ class LocalTimeTest extends TestCase
         if ($data['zone_end']) {
             $timeZonePeriod->setZoneEnd(new DateTime($data['zone_end']));
         }
-        $timeZonePeriod->calcUtcDatetime();
 
         $expectedLocalTime = "2023-03-12 11:52:00";
         $expectedDst = true;
@@ -158,7 +154,6 @@ class LocalTimeTest extends TestCase
         if ($data['zone_end']) {
             $timeZonePeriod->setZoneEnd(new DateTime($data['zone_end']));
         }
-        $timeZonePeriod->calcUtcDatetime();
 
         $expectedLocalTime = "2023-03-12 11:52:00";
         $expectedDst = false;

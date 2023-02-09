@@ -55,16 +55,15 @@ class UtctimeDataService
             if ($data['zone_end']) {
                 $timeZonePeriod->setZoneEnd(new DateTime($data['zone_end']));
             }
-            $timeZonePeriod->calcUtcDatetime();
+
             $utc0Datetime = $timeZonePeriod->getUtcDatetime();
-            $dst = $timeZonePeriod->getDst();
 
             $result['param_city_id'] = $uuid->toString();
             $result['param_time'] = ($targetDatetime)->format('Y-m-d H:i:s');
             $result['city_name'] = $data['city_name'];
             $result['zone_name'] = $data['zone_name'];
             $result['utc0_time'] = $utc0Datetime->format('Y-m-d H:i:s');
-            $result['is_summer_time'] = $dst;
+            $result['is_summer_time'] = $timeZonePeriod->getDst();
             $result = ['success' => true, "data" => $result];
         } catch (DataNotFoundException $e) {
             $result = ['success' => false, 'error' => 'data not found'];
